@@ -1,6 +1,7 @@
 import requests
 from packaging.version import parse as parse_version
 from version import version
+import subprocess, sys
 
 # URL pública do seu JSON (repositório público criado no GitHub)
 VERSION_JSON_URL = "https://raw.githubusercontent.com/LipeVaz/versaoteste/refs/heads/main/version2.json"
@@ -23,7 +24,9 @@ def verificar_atualizacao():
         
         # Comparar versões usando 'packaging' (mais seguro)
         if parse_version(versao_remota) != parse_version(version):
-            return (False, versao_remota, f"Nova versão disponível: {versao_remota}\n{mensagem}")
+            subprocess.run([sys.executable, "baixar_zip.py"])
+            return (False, versao_remota, f"Nova versão disponível!\n{mensagem}. Iniciando atualização...")
+            
         else:
             return (True, versao_remota, f"Bellatrix está atualizada (versão {version}).")
 
