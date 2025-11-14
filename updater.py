@@ -4,7 +4,7 @@ from version import version
 import subprocess, sys
 
 # URL pública do seu JSON (repositório público criado no GitHub)
-VERSION_JSON_URL = "https://raw.githubusercontent.com/LipeVaz/versaoteste/refs/heads/main/version2.json"
+VERSION_JSON_URL = "https://raw.githubusercontent.com/LipeVaz/versaoteste/refs/heads/main/version.json"
 
 def verificar_atualizacao():
     """
@@ -25,6 +25,7 @@ def verificar_atualizacao():
         # Comparar versões usando 'packaging' (mais seguro)
         if parse_version(versao_remota) != parse_version(version):
             subprocess.run([sys.executable, "baixar_zip.py"])
+            subprocess.run([sys.executable, "auto_update.py"])
             return (False, versao_remota, f"Nova versão disponível!\n{mensagem}. Iniciando atualização...")
             
         else:
