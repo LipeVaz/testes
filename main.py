@@ -11,7 +11,7 @@ def checar():
     atualizado, versao_remota, mensagem = verificar_atualizacao()
 
     status_label.config(text="Pronto.", fg="black")
-    btn_verificar.config(state="normal")
+    btn_verificar.config(state="normal") 
 
     if atualizado:
         messagebox.showinfo("Atualização", mensagem)

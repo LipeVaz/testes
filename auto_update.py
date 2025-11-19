@@ -54,7 +54,6 @@ def substituir_arquivos():
             shutil.copy2(caminho_origem, caminho_destino)
             print(f"📁 Atualizado → {caminho_destino}")
 
-
 def main():
     print("📥 Iniciando atualização com base no ZIP baixado...")
 
@@ -66,7 +65,7 @@ def main():
     print("\n✅ Atualização concluída com sucesso!")
     print("🚀 Reiniciando a nova versão...")
 
-    # Apaga o zip baixado (opcional)
+    # Apaga o zip baixado
     if os.path.exists(ZIP_NAME):
         os.remove(ZIP_NAME)
 
