@@ -6,8 +6,18 @@ import sys
 
 ZIP_NAME = "testes.zip"
 
-PASTAS_PROTEGIDAS = {"venv", "__pycache__", "update_temp"}
-ARQUIVOS_PROTEGIDOS = {"auto_update.py", "baixar_zip.py"}
+PASTA_DESTINO = r"C:\Bellatrix"
+
+PASTAS_PROTEGIDAS = {"configs"} # <- Adicionar futuramente pasta de logs
+ARQUIVOS_PROTEGIDOS = {} # <- Adicionar futuramente banco de dados.
+
+
+def garantir_pasta_destino():
+    if not os.path.exists(PASTA_DESTINO):
+        os.makedirs(PASTA_DESTINO)
+        print(f"📁 Pasta criada: {PASTA_DESTINO}")
+    else:
+        print(f"📁 Pasta já existe: {PASTA_DESTINO}")
 
 def extrair_zip():
     print("📦 Extraindo ZIP...")
@@ -27,18 +37,20 @@ def extrair_zip():
     return True
 
 
+
 def substituir_arquivos():
-    print("🔄 Atualizando arquivos...")
+    print("🔄 Movendo arquivos atualizados para C:\\Bellatrix ...")
 
     origem = "update_temp"
 
     for root, dirs, files in os.walk(origem):
         relative_path = os.path.relpath(root, origem)
 
+        # Ignorar pastas protegidas
         if relative_path.split(os.sep)[0] in PASTAS_PROTEGIDAS:
             continue
 
-        destino = os.path.join(os.getcwd(), relative_path)
+        destino = os.path.join(PASTA_DESTINO, relative_path)
 
         if not os.path.exists(destino):
             os.makedirs(destino, exist_ok=True)
@@ -51,11 +63,18 @@ def substituir_arquivos():
             caminho_origem = os.path.join(root, file)
             caminho_destino = os.path.join(destino, file)
 
+            # Se já existir, apaga antes de substituir
+            if os.path.exists(caminho_destino):
+                os.remove(caminho_destino)
+
             shutil.copy2(caminho_origem, caminho_destino)
             print(f"📁 Atualizado → {caminho_destino}")
 
+
 def main():
     print("📥 Iniciando atualização com base no ZIP baixado...")
+
+    garantir_pasta_destino()
 
     if not extrair_zip():
         return
@@ -69,11 +88,15 @@ def main():
     if os.path.exists(ZIP_NAME):
         os.remove(ZIP_NAME)
 
-    # Executa novamente o main.py atualizado
+    # Reinicia o sistema rodando o main.py agora dentro de C:\Bellatrix
     python_exe = sys.executable
-    subprocess.Popen([python_exe, "main.py"])
+    main_py = os.path.join(PASTA_DESTINO, "main.py")
 
-    # Fecha o processo atual
+    if os.path.exists(main_py):
+        subprocess.Popen([python_exe, main_py])
+    else:
+        print("⚠ main.py não encontrado em C:\\Bellatrix")
+
     os._exit(0)
 
 
